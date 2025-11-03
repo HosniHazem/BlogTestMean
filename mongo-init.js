@@ -1,0 +1,1 @@
+db = db.getSiblingDB('blog_platform');
