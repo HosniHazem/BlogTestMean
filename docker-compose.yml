@@ -1,0 +1,66 @@
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  user-service:
+    build: ./services/user-service
+    command: npm run start
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
+      - JWT_SECRET=test_access
+      - REFRESH_TOKEN_SECRET=test_refresh
+      - JWT_ISS=blog-api
+      - JWT_AUD=blog-client
+      - FRONTEND_URL=http://localhost:4200
+    depends_on:
+      - mongo
+
+  article-service:
+    build: ./services/article-service
+    command: npm run start
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
+      - REDIS_URL=redis://redis:6379
+      - FRONTEND_URL=http://localhost:4200
+    depends_on:
+      - mongo
+      - redis
+
+  notification-service:
+    build: ./services/notification-service
+    command: npm run start
+    ports:
+      - "4003:4003"
+    environment:
+      - PORT=4003
+      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
+      - FRONTEND_URL=http://localhost:4200
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:

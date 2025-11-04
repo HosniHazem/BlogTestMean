@@ -1,39 +1,42 @@
 {
-  "name": "blogtest",
+  "name": "blog-platform-backend",
   "version": "1.0.0",
-  "description": "",
-  "homepage": "https://github.com/HosniHazem/BlogTestMean#readme",
-  "bugs": {
-    "url": "https://github.com/HosniHazem/BlogTestMean/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HosniHazem/BlogTestMean.git"
-  },
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "mongo-init.js",
+  "description": "Backend pour plateforme de blog collaboratif",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "NODE_ENV=test jest --runInBand"
   },
-  "keywords": [],
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
-    "express-rate-limit": "^8.2.1",
-    "express-validator": "^7.3.0",
-    "helmet": "^8.1.0",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.2",
-    "socket.io": "^4.8.1",
+    "mongoose": "^8.0.3",
+    "redis": "^5.9.0",
+    "socket.io": "^4.6.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.3.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "globalTeardown": "<rootDir>/tests/teardown.js"
   }
 }
