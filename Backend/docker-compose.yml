@@ -27,12 +27,12 @@ services:
       - "4001:4001"
     environment:
       - PORT=4001
-      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
-      - JWT_SECRET=test_access
-      - REFRESH_TOKEN_SECRET=test_refresh
-      - JWT_ISS=blog-api
-      - JWT_AUD=blog-client
-      - FRONTEND_URL=http://localhost:4200
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET:-change_this_access_secret}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET:-change_this_refresh_secret}
+      - JWT_ISS=${JWT_ISS:-blog-api}
+      - JWT_AUD=${JWT_AUD:-blog-client}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:4200}
     depends_on:
       - mongo
 
@@ -43,9 +43,9 @@ services:
       - "4002:4002"
     environment:
       - PORT=4002
-      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
+      - MONGODB_URI=${MONGODB_URI}
       - REDIS_URL=redis://redis:6379
-      - FRONTEND_URL=http://localhost:4200
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:4200}
     depends_on:
       - mongo
       - redis
@@ -57,8 +57,8 @@ services:
       - "4003:4003"
     environment:
       - PORT=4003
-      - MONGODB_URI=mongodb+srv://blog_admin:PSq3TgtbVFBdEDzx@blog-platform-cluster.lc8jpd7.mongodb.net/?appName=blog-platform-cluster
-      - FRONTEND_URL=http://localhost:4200
+      - MONGODB_URI=${MONGODB_URI}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:4200}
     depends_on:
       - mongo
 
