@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const notificationController = require("../controllers/notification.controller");
 const { authenticate } = require("../middleware/auth.middleware");
+const {
+  PERMISSIONS,
+  requirePermission,
+} = require("../middleware/permissions.middleware");
 
 /**
  * @swagger
@@ -28,7 +32,12 @@ const { authenticate } = require("../middleware/auth.middleware");
  *       200:
  *         description: List of notifications
  */
-router.get("/", authenticate, notificationController.getNotifications);
+router.get(
+  "/",
+  authenticate,
+  requirePermission(PERMISSIONS.NOTIFICATION_READ),
+  notificationController.getNotifications
+);
 
 /**
  * @swagger
@@ -45,6 +54,7 @@ router.get("/", authenticate, notificationController.getNotifications);
 router.get(
   "/unread-count",
   authenticate,
+  requirePermission(PERMISSIONS.NOTIFICATION_READ),
   notificationController.getUnreadCount
 );
 

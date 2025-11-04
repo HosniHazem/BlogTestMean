@@ -8,6 +8,10 @@ const {
   sanitizeInput,
 } = require("../middleware/validation.middleware");
 const {
+  PERMISSIONS,
+  requirePermission,
+} = require("../middleware/permissions.middleware");
+const {
   createArticleValidation,
   updateArticleValidation,
 } = require("../validators/article.validators");
@@ -276,6 +280,18 @@ router.put(
   sanitizeInput,
   updateArticleValidation,
   handleValidationErrors,
+  requirePermission(PERMISSIONS.ARTICLE_UPDATE_ANY, {
+    resolveOwnership: async (req) => {
+      const Article = require("../models/Article.model");
+      const article = await Article.findById(req.params.id).select("author");
+      const isOwner =
+        article &&
+        req.user &&
+        article.author &&
+        article.author.toString() === req.user._id.toString();
+      return { isOwner };
+    },
+  }),
   articleController.updateArticle
 );
 
@@ -302,7 +318,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  authorize("ADMIN"),
+  requirePermission(PERMISSIONS.ARTICLE_DELETE_ANY),
   articleController.deleteArticle
 );
 

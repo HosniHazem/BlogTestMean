@@ -7,6 +7,10 @@ const {
   handleValidationErrors,
   sanitizeInput,
 } = require("../middleware/validation.middleware");
+const {
+  PERMISSIONS,
+  requirePermission,
+} = require("../middleware/permissions.middleware");
 
 /**
  * @swagger
@@ -37,7 +41,12 @@ const {
  *       200:
  *         description: List of users
  */
-router.get("/", authenticate, authorize("ADMIN"), userController.getAllUsers);
+router.get(
+  "/",
+  authenticate,
+  requirePermission(PERMISSIONS.USER_READ_ANY),
+  userController.getAllUsers
+);
 
 /**
  * @swagger
@@ -99,6 +108,15 @@ router.put(
   authenticate,
   sanitizeInput,
   handleValidationErrors,
+  requirePermission(PERMISSIONS.USER_UPDATE_ANY, {
+    resolveOwnership: async (req) => {
+      const isOwner =
+        req.user &&
+        req.params.id &&
+        req.params.id.toString() === req.user._id.toString();
+      return { isOwner };
+    },
+  }),
   userController.updateUser
 );
 
@@ -127,7 +145,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  authorize("ADMIN"),
+  requirePermission(PERMISSIONS.USER_DELETE_ANY),
   userController.deleteUser
 );
 

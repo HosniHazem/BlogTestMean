@@ -8,6 +8,10 @@ const {
   sanitizeInput,
 } = require("../middleware/validation.middleware");
 const {
+  PERMISSIONS,
+  requirePermission,
+} = require("../middleware/permissions.middleware");
+const {
   createCommentValidation,
   updateCommentValidation,
 } = require("../validators/comment.validators");
@@ -144,6 +148,18 @@ router.put(
   sanitizeInput,
   updateCommentValidation,
   handleValidationErrors,
+  requirePermission(PERMISSIONS.COMMENT_UPDATE_ANY, {
+    resolveOwnership: async (req) => {
+      const Comment = require("../models/Comment.model");
+      const comment = await Comment.findById(req.params.id).select("author");
+      const isOwner =
+        comment &&
+        req.user &&
+        comment.author &&
+        comment.author.toString() === req.user._id.toString();
+      return { isOwner };
+    },
+  }),
   commentController.updateComment
 );
 
@@ -165,7 +181,23 @@ router.put(
  *       200:
  *         description: Comment deleted
  */
-router.delete("/:id", authenticate, commentController.deleteComment);
+router.delete(
+  "/:id",
+  authenticate,
+  requirePermission(PERMISSIONS.COMMENT_DELETE_ANY, {
+    resolveOwnership: async (req) => {
+      const Comment = require("../models/Comment.model");
+      const comment = await Comment.findById(req.params.id).select("author");
+      const isOwner =
+        comment &&
+        req.user &&
+        comment.author &&
+        comment.author.toString() === req.user._id.toString();
+      return { isOwner };
+    },
+  }),
+  commentController.deleteComment
+);
 
 /**
  * @swagger
