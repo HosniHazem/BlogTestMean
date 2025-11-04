@@ -55,9 +55,7 @@ const userSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Index pour optimisation
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// Index pour optimisation (éviter doublons avec champs uniques)
 userSchema.index({ role: 1 });
 
 // Virtual pour le nombre d'articles

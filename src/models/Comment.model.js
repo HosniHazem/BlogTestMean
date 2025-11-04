@@ -13,19 +13,19 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Article",
       required: true,
-      index: true,
+      // index handled via schema.index({ article: 1, createdAt: -1 }) below
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
+      // index handled via schema.index({ author: 1 }) below
     },
     parentComment: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
       default: null,
-      index: true,
+      // index handled via schema.index({ parentComment: 1 }) below
     },
     likes: [
       {

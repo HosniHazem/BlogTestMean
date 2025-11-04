@@ -30,7 +30,7 @@ const articleSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
+      // index handled via schema.index({ author: 1, status: 1 }) below
     },
     featuredImage: {
       type: String,
@@ -52,7 +52,7 @@ const articleSchema = new mongoose.Schema(
       type: String,
       enum: ["DRAFT", "PUBLISHED", "ARCHIVED"],
       default: "DRAFT",
-      index: true,
+      // index handled via composite indexes below
     },
     views: {
       type: Number,
@@ -85,7 +85,8 @@ articleSchema.pre("validate", function (next) {
     this.slug = this.title
       .toString()
       .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
   }
@@ -119,16 +120,20 @@ articleSchema.pre("save", function (next) {
   if (this.isModified("title") && !this.slug) {
     this.slug = this.title
       .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
   }
-  if (
-    this.isModified("status") &&
-    this.status === "PUBLISHED" &&
-    !this.publishedAt
-  ) {
-    this.publishedAt = new Date();
+  // Set publishedAt when status changes to PUBLISHED
+  if (this.isModified("status")) {
+    if (this.status === "PUBLISHED" && !this.publishedAt) {
+      this.publishedAt = new Date();
+    } else if (this.status !== "PUBLISHED" && this.publishedAt) {
+      // Optionally keep publishedAt even if status changes back to DRAFT
+      // Uncomment the next line if you want to clear publishedAt when status changes from PUBLISHED
+      // this.publishedAt = undefined;
+    }
   }
   next();
 });
