@@ -1,0 +1,144 @@
+<div class="container">
+  <div class="form-card">
+    <h1>{{ isEditMode ? "Modifier l'article" : "Nouvel article" }}</h1>
+
+    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Titre *</label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          placeholder="Titre de votre article"
+          [class.error]="
+            articleForm.get('title')?.invalid &&
+            articleForm.get('title')?.touched
+          "
+        />
+        @if (articleForm.get('title')?.invalid &&
+        articleForm.get('title')?.touched) {
+        <span class="error-message"
+          >Le titre doit contenir au moins 3 caractères</span
+        >
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="content">Contenu *</label>
+        <textarea
+          id="content"
+          formControlName="content"
+          rows="15"
+          placeholder="Écrivez votre article ici..."
+          [class.error]="
+            articleForm.get('content')?.invalid &&
+            articleForm.get('content')?.touched
+          "
+        ></textarea>
+        @if (articleForm.get('content')?.errors &&
+        articleForm.get('content')?.touched) {
+        <span class="error-message">
+          {{ articleForm.get('content')?.errors?.['backend'] || 'Le contenu doit contenir au moins 50 caractères' }}
+        </span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="excerpt">Extrait</label>
+        <textarea
+          id="excerpt"
+          formControlName="excerpt"
+          rows="3"
+          placeholder="Résumé court de l'article"
+        ></textarea>
+        <span class="help-text">Optionnel: résumé affiché dans les listes</span>
+      </div>
+
+      <div class="form-group">
+        <label for="featuredImage">Image mise en avant (URL)</label>
+        <input
+          type="url"
+          id="featuredImage"
+          formControlName="featuredImage"
+          placeholder="https://example.com/image.jpg"
+        />
+        <span class="help-text"
+          >Optionnel: URL d'une image pour illustrer votre article</span
+        >
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="category">Catégorie</label>
+          <input
+            id="category"
+            type="text"
+            formControlName="category"
+            placeholder="Catégorie"
+          />
+        </div>
+        <div class="form-group half">
+          <label for="status">Statut</label>
+          <select id="status" formControlName="status">
+            <option value="DRAFT">Brouillon</option>
+            <option value="PUBLISHED">Publié</option>
+            <option value="ARCHIVED">Archivé</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tags">Tags</label>
+        <div class="tag-input-container">
+          <input
+            type="text"
+            [(ngModel)]="tagInput"
+            [ngModelOptions]="{ standalone: true }"
+            (keyup.enter)="addTag()"
+            placeholder="Ajouter un tag"
+            class="tag-input"
+          />
+          <button type="button" (click)="addTag()" class="btn-add-tag">
+            Ajouter
+          </button>
+        </div>
+
+        @if (tags.length > 0) {
+        <div class="tags-list">
+          @for (tag of tags; track tag) {
+          <span class="tag">
+            {{ tag }}
+            <button type="button" (click)="removeTag(tag)" class="tag-remove">
+              ×
+            </button>
+          </span>
+          }
+        </div>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="button" (click)="cancel()" class="btn btn-secondary">
+          Annuler
+        </button>
+        <button
+          type="submit"
+          [disabled]="loading || articleForm.invalid"
+          class="btn btn-primary"
+        >
+          {{
+            loading
+              ? "Enregistrement..."
+              : isEditMode
+              ? "Mettre à jour"
+              : "Publier"
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

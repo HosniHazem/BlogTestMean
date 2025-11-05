@@ -1,0 +1,77 @@
+<div class="container">
+  @if (loading) {
+  <div class="loading">Chargement de l'article...</div>
+  } @else if (article) {
+  <div class="article-detail">
+    <div class="article-header">
+      <button routerLink="/articles" class="btn-back">
+        ← Retour aux articles
+      </button>
+
+      <div class="article-actions">
+        @if (canEdit()) {
+        <button (click)="editArticle()" class="btn btn-edit">Modifier</button>
+        } @if (canDelete()) {
+        <button (click)="deleteArticle()" class="btn btn-delete">
+          Supprimer
+        </button>
+        }
+      </div>
+    </div>
+
+    @if (article['featuredImage']) {
+    <div
+      class="article-image"
+      [style.background-image]="'url(' + article['featuredImage'] + ')'"
+    ></div>
+    }
+
+    <div class="article-content">
+      <h1 class="article-title">{{ article.title }}</h1>
+
+      <div class="article-meta">
+        <div class="meta-item">
+          <span class="meta-label">Auteur:</span>
+          <span class="meta-value">{{ article.author.username }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Publié le:</span>
+          <span class="meta-value">{{
+            article.createdAt | date : "long"
+          }}</span>
+        </div>
+        @if (article.updatedAt !== article.createdAt) {
+        <div class="meta-item">
+          <span class="meta-label">Mis à jour:</span>
+          <span class="meta-value">{{
+            article.updatedAt | date : "long"
+          }}</span>
+        </div>
+        }
+      </div>
+
+      @if (article.tags && article.tags.length > 0) {
+      <div class="tags">
+        @for (tag of article.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+        }
+      </div>
+      }
+
+      <div class="article-actions" style="margin: 1rem 0">
+        <button class="btn btn-view" (click)="toggleLike()">
+          {{ isLiked ? "Je n'aime plus" : "J'aime" }} ({{ likesCount }})
+        </button>
+      </div>
+
+      <div class="article-body">
+        <p>{{ article.content }}</p>
+      </div>
+    </div>
+
+    <app-comment-section [articleId]="articleId"></app-comment-section>
+  </div>
+  } @else {
+  <div class="error">Article non trouvé</div>
+  }
+</div>

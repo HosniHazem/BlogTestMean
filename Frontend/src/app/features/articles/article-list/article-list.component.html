@@ -1,0 +1,106 @@
+<div class="container">
+  <div class="header">
+    <div class="header-content">
+      <h1>Articles</h1>
+      @if (canCreate()) {
+      <button routerLink="/articles/new" class="btn btn-primary">
+        Nouvel article
+      </button>
+      }
+    </div>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Rechercher des articles..."
+        class="search-input"
+      />
+      <button (click)="onSearch()" class="btn btn-search">Rechercher</button>
+    </div>
+  </div>
+
+  @if (loading) {
+  <div class="loading">Chargement des articles...</div>
+  } @else { @if (articles.length === 0) {
+  <div class="empty-state">
+    <p>Aucun article trouvé</p>
+    @if (canCreate()) {
+    <button routerLink="/articles/new" class="btn btn-primary">
+      Créer le premier article
+    </button>
+    }
+  </div>
+  } @else {
+  <div class="articles-grid">
+    @for (article of articles; track article._id) {
+    <div class="article-card">
+      @if (article['featuredImage']) {
+      <div
+        class="article-image"
+        [style.background-image]="'url(' + article['featuredImage'] + ')'"
+      ></div>
+      }
+      <div class="article-content">
+        <div class="article-header">
+          <h2 class="article-title" (click)="viewArticle(article._id)">
+            {{ article.title }}
+          </h2>
+          <div class="article-meta">
+            <span class="author">Par {{ article.author.username }}</span>
+            <span class="date">{{ article.createdAt | date : "short" }}</span>
+          </div>
+        </div>
+
+        <p class="article-excerpt">
+          {{ getTruncatedContent(article.content) }}
+        </p>
+
+        @if (article.tags && article.tags.length > 0) {
+        <div class="tags">
+          @for (tag of article.tags; track tag) {
+          <span class="tag">{{ tag }}</span>
+          }
+        </div>
+        }
+
+        <div class="article-actions">
+          <button (click)="viewArticle(article._id)" class="btn btn-view">
+            Lire
+          </button>
+          @if (canEdit(article)) {
+          <button (click)="editArticle(article._id)" class="btn btn-edit">
+            Modifier
+          </button>
+          } @if (canDelete()) {
+          <button (click)="deleteArticle(article)" class="btn btn-delete">
+            Supprimer
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  @if (totalPages > 1) {
+  <div class="pagination">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="btn btn-pagination"
+    >
+      Précédent
+    </button>
+    <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="btn btn-pagination"
+    >
+      Suivant
+    </button>
+  </div>
+  } } }
+</div>
