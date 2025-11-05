@@ -1,0 +1,116 @@
+<div class="comments-section">
+  <h2 class="comments-title">Commentaires</h2>
+
+  @if (authService.isAuthenticated()) {
+    <div class="comment-form">
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()">
+        <textarea
+          formControlName="content"
+          placeholder="Ajouter un commentaire..."
+          rows="3"
+          class="comment-textarea"
+        ></textarea>
+        <button
+          type="submit"
+          [disabled]="commentForm.invalid || submitting"
+          class="btn btn-primary"
+        >
+          {{ submitting ? 'Envoi...' : 'Commenter' }}
+        </button>
+      </form>
+    </div>
+  } @else {
+    <div class="login-prompt">
+      <p>Connectez-vous pour commenter</p>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading">Chargement des commentaires...</div>
+  } @else {
+    @if (comments.length === 0) {
+      <div class="empty-comments">
+        <p>Aucun commentaire pour le moment. Soyez le premier à commenter!</p>
+      </div>
+    } @else {
+      <div class="comments-list">
+        @for (comment of comments; track comment._id) {
+          <div class="comment">
+            <div class="comment-header">
+              <span class="comment-author">{{ comment.author.username }}</span>
+              <span class="comment-date">{{ comment.createdAt | date: 'short' }}</span>
+            </div>
+            <div class="comment-content">{{ comment.content }}</div>
+            <div class="comment-actions">
+              @if (authService.isAuthenticated()) {
+                <button
+                  (click)="startReply(comment._id)"
+                  class="btn-action"
+                >
+                  Répondre
+                </button>
+              }
+              @if (canDeleteComment(comment)) {
+                <button
+                  (click)="deleteComment(comment._id)"
+                  class="btn-action btn-delete"
+                >
+                  Supprimer
+                </button>
+              }
+            </div>
+
+            @if (replyingTo === comment._id) {
+              <div class="reply-form">
+                <form [formGroup]="replyForms[comment._id]" (ngSubmit)="onSubmitReply(comment._id)">
+                  <textarea
+                    formControlName="content"
+                    placeholder="Votre réponse..."
+                    rows="2"
+                    class="comment-textarea"
+                  ></textarea>
+                  <div class="reply-actions">
+                    <button type="button" (click)="cancelReply()" class="btn btn-secondary">
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      [disabled]="!replyForms[comment._id] || replyForms[comment._id].invalid || submitting"
+                      class="btn btn-primary"
+                    >
+                      {{ submitting ? 'Envoi...' : 'Répondre' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            }
+
+            @if (comment.replies && comment.replies.length > 0) {
+              <div class="replies">
+                @for (reply of comment.replies; track reply._id) {
+                  <div class="comment reply">
+                    <div class="comment-header">
+                      <span class="comment-author">{{ reply.author.username }}</span>
+                      <span class="comment-date">{{ reply.createdAt | date: 'short' }}</span>
+                    </div>
+                    <div class="comment-content">{{ reply.content }}</div>
+                    @if (canDeleteComment(reply)) {
+                      <div class="comment-actions">
+                        <button
+                          (click)="deleteComment(reply._id)"
+                          class="btn-action btn-delete"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
