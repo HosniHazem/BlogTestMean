@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="header">
+    <h1>Tableau de bord</h1>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Chargement des statistiques...</div>
+  } @else if (analytics) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #c3dafe;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#667eea" width="32" height="32">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Articles</p>
+          <p class="stat-value">{{ analytics.totalArticles }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #c6f6d5;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#48bb78" width="32" height="32">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Commentaires</p>
+          <p class="stat-value">{{ analytics.totalComments }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background-color: #fed7d7;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#fc8181" width="32" height="32">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Utilisateurs</p>
+          <p class="stat-value">{{ analytics.totalUsers }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h2 class="chart-title">Articles publiés</h2>
+        <div class="chart-container">
+          <canvas id="articlesChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2 class="chart-title">Auteurs les plus actifs</h2>
+        <div class="chart-container">
+          <canvas id="authorsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2 class="chart-title">Tags populaires</h2>
+        <div class="chart-container">
+          <canvas id="tagsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="error">Impossible de charger les statistiques</div>
+  }
+</div>

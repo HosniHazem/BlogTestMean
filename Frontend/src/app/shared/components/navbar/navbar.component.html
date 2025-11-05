@@ -1,0 +1,92 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/" class="brand-link">
+        <span class="brand-name">Blog IEG</span>
+      </a>
+    </div>
+
+    <button class="menu-toggle" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="navbar-menu" [class.active]="isMenuOpen">
+      @if (authService.isAuthenticated()) {
+      <a routerLink="/articles" routerLinkActive="active" class="nav-link">
+        Articles
+      </a>
+
+      @if (authService.hasRole([UserRole.ADMIN, UserRole.EDITOR,
+      UserRole.WRITER])) {
+      <a routerLink="/articles/new" routerLinkActive="active" class="nav-link">
+        Créer
+      </a>
+      } @if (isAdmin()) {
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        Tableau de bord
+      </a>
+      <a routerLink="/users" routerLinkActive="active" class="nav-link">
+        Utilisateurs
+      </a>
+      }
+
+      <div class="navbar-user">
+        <span class="user-name">{{ authService.currentUser()?.username }}</span>
+        <span class="user-role">{{ authService.currentUser()?.role }}</span>
+        <button
+          #notifButton
+          class="nav-link"
+          (click)="toggleNotifications(); $event.stopPropagation()"
+        >
+          Notifications
+        </button>
+        @if (unreadCount > 0) {
+        <span class="notification-badge">{{ unreadCount }}</span> } @if
+        (showNotifications) {
+        <div
+          #notifPanel
+          class="notifications-panel"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="notifications-header">
+            <span>Notifications</span>
+            <button class="mark-all" (click)="markAllAsRead()">
+              Tout marquer lu
+            </button>
+          </div>
+          <div class="notifications-list">
+            @if (!notifications || notifications.length === 0) {
+            <div class="empty">Aucune notification</div>
+            } @else { @for (n of notifications; track n._id) {
+            <div class="notification-item" [class.unread]="!n.read">
+              <div class="message">{{ n.title || n.message }}</div>
+              <div class="meta">{{ n.createdAt | date : "short" }}</div>
+              @if (!n.read) {
+              <button class="mark" (click)="markAsRead(n._id, $event)">
+                Marquer lu
+              </button>
+              }
+            </div>
+            } }
+          </div>
+        </div>
+        }
+        <button (click)="logout()" class="btn-logout">Déconnexion</button>
+      </div>
+      } @else {
+      <a routerLink="/login" routerLinkActive="active" class="nav-link">
+        Connexion
+      </a>
+      <a
+        routerLink="/register"
+        routerLinkActive="active"
+        class="nav-link btn-register"
+      >
+        Inscription
+      </a>
+      }
+    </div>
+  </div>
+</nav>
