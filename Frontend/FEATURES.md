@@ -177,3 +177,69 @@ The frontend is designed to integrate with a MEAN stack backend with these endpo
 - `join-article`, `leave-article`
 - `new-comment`, `notification`
 
+## Testing Implementation
+
+### Unit Tests (Jest)
+
+- ✅ **Jest** configured with **jest-preset-angular**
+- ✅ TypeScript support with **ts-jest**
+- ✅ Test configuration in `jest.config.ts`
+- ✅ Setup file for Angular testing environment
+- ✅ Code coverage reporting enabled
+- ✅ Watch mode for development
+
+**Run unit tests:**
+
+```bash
+# Run all tests
+npm test
+
+# Run in watch mode
+npm run test:watch
+
+# Run with coverage
+npm test -- --coverage
+```
+
+**Tests actuels:**
+
+- `src/app/app.component.spec.ts` - Test de sanité de base
+
+### End-to-End Tests (Playwright)
+
+- ✅ **Playwright** for browser automation
+- ✅ Multi-browser testing (Chromium, Firefox, WebKit)
+- ✅ Configuration in `playwright.config.ts`
+- ✅ Tests located in `e2e/` directory
+- ✅ TypeScript support with proper typing
+- ✅ Trace and screenshot on failure
+
+**Run e2e tests:**
+
+```bash
+# Start the app (Terminal 1)
+npm start
+
+# Run e2e tests (Terminal 2)
+npm run e2e
+
+# Run with UI mode
+npx playwright test --ui
+
+# Run in debug mode
+npx playwright test --debug
+```
+
+**Tests actuels:**
+
+- `e2e/example.spec.ts` - Test de base vérifiant le titre de la page
+
+### Testing Best Practices
+
+- ✅ Isolated unit tests for services and components
+- ✅ Integration tests for user workflows
+- ✅ Mocking external dependencies
+- ✅ Clear test descriptions
+- ✅ Independent test cases
+- ✅ CI/CD ready configuration
+

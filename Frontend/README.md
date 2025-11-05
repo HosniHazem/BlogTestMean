@@ -168,6 +168,111 @@ npm run build
 
 Les fichiers optimisés seront générés dans le dossier `dist/demo`
 
+## Tests
+
+### Configuration des Tests
+
+Le projet utilise deux frameworks de test:
+
+- **Jest** pour les tests unitaires
+- **Playwright** pour les tests end-to-end (e2e)
+
+### Installation des Dépendances de Test
+
+```bash
+# Installer les dépendances npm
+npm install
+
+# Installer les navigateurs Playwright
+npx playwright install
+```
+
+### Tests Unitaires
+
+Les tests unitaires utilisent **Jest** avec **jest-preset-angular** pour tester les composants, services et autres unités de code de manière isolée.
+
+#### Configuration
+
+- **jest.config.ts** - Configuration principale de Jest
+- **setup-jest.ts** - Fichier de setup pour Jest
+- **tsconfig.spec.json** - Configuration TypeScript pour les tests
+
+#### Exécuter les Tests Unitaires
+
+```bash
+# Exécuter tous les tests unitaires
+npm test
+
+# Exécuter les tests en mode watch (re-exécution automatique)
+npm run test:watch
+
+# Exécuter les tests avec couverture de code
+npm test -- --coverage
+```
+
+#### Structure des Tests Unitaires
+
+Les fichiers de test unitaires suivent la convention `*.spec.ts` et sont placés à côté des fichiers source.
+
+**Test actuel:**
+- `src/app/app.component.spec.ts` - Test de base pour vérifier la configuration
+
+### Tests End-to-End (E2E)
+
+Les tests e2e utilisent **Playwright** pour tester l'application complète dans un navigateur réel, simulant les interactions utilisateur.
+
+#### Configuration
+
+- **playwright.config.ts** - Configuration Playwright
+- **e2e/** - Dossier contenant tous les tests e2e
+- **e2e/tsconfig.json** - Configuration TypeScript pour les tests e2e
+
+#### Exécuter les Tests E2E
+
+```bash
+# Démarrer l'application en développement (Terminal 1)
+npm start
+
+# Exécuter les tests e2e (Terminal 2)
+npm run e2e
+
+# Exécuter avec une URL personnalisée
+E2E_BASE_URL=http://localhost:4200 npm run e2e
+
+# Exécuter en mode UI (interface graphique)
+npx playwright test --ui
+
+# Exécuter en mode debug
+npx playwright test --debug
+```
+
+#### Structure des Tests E2E
+
+**Tests actuels:**
+- `e2e/example.spec.ts` - Test de base vérifiant le titre de la page
+- `e2e/tsconfig.json` - Configuration TypeScript pour les tests e2e
+
+### Bonnes Pratiques de Test
+
+- **Tests unitaires**: Testez la logique métier, les services, et les composants de manière isolée
+- **Tests e2e**: Testez les parcours utilisateur critiques et les intégrations
+- **Couverture de code**: Visez au minimum 80% de couverture pour le code critique
+- **Tests atomiques**: Chaque test doit être indépendant et ne pas dépendre d'autres tests
+- **Nommage clair**: Utilisez des descriptions explicites pour les tests
+
+### CI/CD
+
+Les tests peuvent être intégrés dans votre pipeline CI/CD:
+
+```bash
+# Dans votre pipeline CI
+npm install
+npx playwright install --with-deps
+npm test
+npm run build
+npm run e2e
+```
+
 ## Routes de l'Application
 
 | Route                | Accès                                 | Description                |
