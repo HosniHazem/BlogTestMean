@@ -1,7 +1,7 @@
 {
   "name": "blog-platform-backend",
   "version": "1.0.0",
-  "description": "Backend pour plateforme de blog collaboratif",
+  "description": "Backend pour plateforme de Blog IEG",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
