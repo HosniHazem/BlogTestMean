@@ -1,0 +1,150 @@
+<div class="container">
+  <div class="header header-row">
+    <h1>Gestion des utilisateurs</h1>
+    <button class="btn-primary" (click)="openCreateModal()">
+      Créer un utilisateur
+    </button>
+  </div>
+
+  @if (successMessage) {
+  <div class="alert alert-success">{{ successMessage }}</div>
+  } @if (errorMessage) {
+  <div class="alert alert-error">{{ errorMessage }}</div>
+  } @if (loading) {
+  <div class="loading">Chargement...</div>
+  } @else {
+  <div class="table-container">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Nom d'utilisateur</th>
+          <th>Email</th>
+          <th>Rôle actuel</th>
+          <th>Modifier le rôle</th>
+          <th>Date de création</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user._id) {
+        <tr>
+          <td>
+            @if (editingField[user._id] !== 'username') {
+            <span class="editable" (click)="enableEdit(user, 'username')">{{
+              user.username
+            }}</span>
+            } @else {
+            <input
+              class="edit-input"
+              [(ngModel)]="fieldValue[user._id].username"
+              (keydown)="onEditKeydown($event, user._id)"
+              (blur)="onEditBlur(user._id)"
+              autofocus
+            />
+            }
+          </td>
+          <td>
+            @if (editingField[user._id] !== 'email') {
+            <span class="editable" (click)="enableEdit(user, 'email')">{{
+              user.email
+            }}</span>
+            } @else {
+            <input
+              class="edit-input"
+              type="email"
+              [(ngModel)]="fieldValue[user._id].email"
+              (keydown)="onEditKeydown($event, user._id)"
+              (blur)="onEditBlur(user._id)"
+              autofocus
+            />
+            }
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <select
+              [(ngModel)]="user.role"
+              (change)="onRoleChange(user._id, user.role)"
+              class="role-select"
+            >
+              @for (role of roles; track role) {
+              <option [value]="role">{{ role }}</option>
+              }
+            </select>
+          </td>
+          <td>{{ user.createdAt | date : "short" }}</td>
+          <td>
+            <button (click)="openDeleteModal(user)" class="btn-delete">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @if (showCreateModal) {
+  <div class="modal-backdrop" (click)="closeCreateModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Créer un utilisateur</h3>
+      <button class="modal-close" (click)="closeCreateModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <label>Nom d'utilisateur</label>
+        <input placeholder="Nom d'utilisateur" [(ngModel)]="newUser.username" />
+        <label>Email</label>
+        <input placeholder="Email" type="email" [(ngModel)]="newUser.email" />
+        <label>Mot de passe</label>
+        <input
+          placeholder="Mot de passe"
+          type="password"
+          [(ngModel)]="newUser.password"
+        />
+        <label>Rôle</label>
+        <select [(ngModel)]="newUser.role">
+          @for (role of roles; track role) {
+          <option [value]="role">{{ role }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeCreateModal()">
+        Annuler
+      </button>
+      <button class="btn-primary" (click)="createUser()">Créer</button>
+    </div>
+  </div>
+  } @if (showDeleteModal && userToDelete) {
+  <div class="modal-backdrop" (click)="closeDeleteModal()"></div>
+  <div class="modal modal-danger">
+    <div class="modal-header">
+      <h3>Supprimer l'utilisateur</h3>
+      <button class="modal-close" (click)="closeDeleteModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="danger-row">
+        <div class="danger-icon">!</div>
+        <div>
+          <p>
+            Êtes-vous sûr de vouloir supprimer
+            <strong>{{ userToDelete.username }}</strong> ?
+          </p>
+          <small>Cette action est irréversible.</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeDeleteModal()">
+        Annuler
+      </button>
+      <button class="btn-danger" (click)="confirmDelete()">Supprimer</button>
+    </div>
+  </div>
+  }
+</div>
